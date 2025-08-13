@@ -162,7 +162,7 @@ export default function CadastroScreen() {
           </View>
 
           {/* Campo CPF */}
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 10, width: "100%" }}>
             <Text style={styles.label}>CPF:</Text>
             <TextInput
               style={styles.input}
