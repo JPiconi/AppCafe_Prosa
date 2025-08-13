@@ -4,17 +4,19 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#ab7843",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+    paddingBottom: 170,
   },
-  title: {
-    fontSize: 28,
+  label: {
+    fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#333",
+    color: "#381e14",
+    marginBottom: 4,
   },
+
   subtitle: {
     fontSize: 18,
     color: "#555",
@@ -22,20 +24,26 @@ export const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 80,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#402417",
     marginBottom: 15,
-    color: "#000",
+    color: "#fff",
   },
   btn: {
-    backgroundColor: "#6200ee",
+    marginTop: 25,
+    backgroundColor: "#381e14",
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 80,
     width: "100%",
     alignItems: "center",
+  },
+  Logo: {
+    width: 250,
+    height: 250,
+    marginBottom: 5,
   },
   btnText: {
     color: "#fff",
@@ -45,7 +53,7 @@ export const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 40,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
 });
