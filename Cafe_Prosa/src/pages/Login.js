@@ -8,9 +8,10 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from "../Styles/Styles";
+import { styles } from "../Styles/styles";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -80,12 +81,16 @@ export default function LoginScreen() {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Bem-vindo!</Text>
+          <Image
+            source={require("../assets/images/Logo.png")} // Caminho da sua logo
+            style={styles.Logo}
+            resizeMode="contain"
+          />
 
           <TextInput
             style={styles.input}
             placeholder="Digite seu e-mail"
-            placeholderTextColor="#888"
+            placeholderTextColor="#381e14"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
@@ -94,7 +99,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Digite sua senha"
-            placeholderTextColor="#888"
+            placeholderTextColor="#381e14"
             secureTextEntry
             value={senha}
             onChangeText={setSenha}
@@ -122,13 +127,20 @@ export default function LoginScreen() {
 
           {/* Link para recuperar senha */}
           <TouchableOpacity onPress={() => navigation.navigate("EsqueciSenha")}>
-            <Text style={{ color: "#888", fontSize: 14, marginBottom: 10 }}>
+            <Text style={{ color: "#381e14", fontSize: 14, marginBottom: 10 }}>
               Esqueci minha senha
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.btn} onPress={handleLogin}>
             <Text style={styles.btnText}>Entrar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Cadastro")}
+          >
+            <Text style={styles.btnText}>Fazer Cadastro</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
