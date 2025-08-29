@@ -153,6 +153,50 @@ export default function CadastroScreen() {
             </View>
           </View>
 
+          {/* Requisitos de senha */}
+          <View style={{ width: "100%", marginTop: 5 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: validations.length ? "green" : "red",
+              }}
+            >
+              • Pelo menos 8 caracteres
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: validations.upper ? "green" : "red",
+              }}
+            >
+              • Uma letra maiúscula
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: validations.lower ? "green" : "red",
+              }}
+            >
+              • Uma letra minúscula
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: validations.number ? "green" : "red",
+              }}
+            >
+              • Um número
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: validations.special ? "green" : "red",
+              }}
+            >
+              • Um caractere especial
+            </Text>
+          </View>
+
           {/* CPF */}
           <View style={{ marginTop: 10, width: "100%" }}>
             <Text style={styles.label}>CPF:</Text>

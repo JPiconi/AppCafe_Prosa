@@ -1,3 +1,4 @@
+// src/pages/Home.js
 import React, { useState, useRef, useContext } from "react";
 import {
   View,
@@ -21,7 +22,6 @@ export default function HomeScreen() {
   const [imageUri, setImageUri] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Alterna menu
   const toggleMenu = () => {
     Animated.timing(menuAnim, {
       toValue: menuOpen ? -220 : 0,
@@ -31,7 +31,7 @@ export default function HomeScreen() {
     setMenuOpen(!menuOpen);
   };
 
-  // Escolher imagem de perfil
+  // ✅ ImagePicker atualizado (sem warning)
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -39,13 +39,12 @@ export default function HomeScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: [ImagePicker.MediaType.Images], // ✅ correção
       quality: 1,
     });
     if (!result.canceled) setImageUri(result.assets[0].uri);
   };
 
-  // Logout
   const handleLogout = async () => {
     await logout();
     navigation.replace("Login");
@@ -96,7 +95,7 @@ export default function HomeScreen() {
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
           >
-            Perfil: {user?.username || "Usuário"}
+            Perfil
           </Text>
         </TouchableOpacity>
 
@@ -105,7 +104,7 @@ export default function HomeScreen() {
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
           >
-            Email: {user?.email || ""}
+            Email: {user?.email || "não informado"}
           </Text>
         </TouchableOpacity>
 
@@ -134,18 +133,12 @@ export default function HomeScreen() {
         <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>
           Bem-vindo, {user?.username || "Usuário"}!
         </Text>
-        <Text
-          style={{
-            color: darkMode ? "#fff" : "#000",
-            fontSize: 14,
-            marginTop: 5,
-          }}
-        >
-          Email: {user?.email || ""}
-        </Text>
       </View>
     </View>
   );
 }
+<<<<<<< HEAD
 
 //Teste
+=======
+>>>>>>> a5102870fc89ac0502d52197c64d891f0dd47876
