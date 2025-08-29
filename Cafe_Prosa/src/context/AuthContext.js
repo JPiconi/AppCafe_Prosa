@@ -21,18 +21,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  const login = async (userData) => {
-    // Garantir que o objeto tenha todas as propriedades esperadas
-    const fullUser = {
-      username: userData.username || "Usuário",
-      email: userData.email,
-      cpf: userData.cpf || "",
-      senha: userData.senha,
-    };
-    setUser(fullUser);
-    await AsyncStorage.setItem("@user", JSON.stringify(fullUser));
-  };
-
   const register = async (userData) => {
     const fullUser = {
       username: userData.username,
@@ -42,6 +30,27 @@ export const AuthProvider = ({ children }) => {
     };
     setUser(fullUser);
     await AsyncStorage.setItem("@user", JSON.stringify(fullUser));
+  };
+
+  const login = async ({ email, senha }) => {
+    try {
+      const storedUser = await AsyncStorage.getItem("@user");
+      if (!storedUser) throw new Error("Usuário não cadastrado");
+
+      const parsedUser = JSON.parse(storedUser);
+
+      if (parsedUser.email !== email) {
+        throw new Error("Usuário não cadastrado");
+      }
+      if (parsedUser.senha !== senha) {
+        throw new Error("Usuário ou senha incorretos");
+      }
+
+      setUser(parsedUser);
+      return parsedUser;
+    } catch (err) {
+      throw err;
+    }
   };
 
   const logout = async () => {
