@@ -73,7 +73,7 @@ export default function HomeScreen() {
         </Text>
 
         <TouchableOpacity style={homeStyles.menuButton} onPress={toggleMenu}>
-          <Text style={{ fontSize: 30, color: darkMode ? "#fff" : "#000" }}>
+          <Text style={{ fontSize: 30, color: darkMode ? "#fff" : "#fff" }}>
             ☰
           </Text>
         </TouchableOpacity>
