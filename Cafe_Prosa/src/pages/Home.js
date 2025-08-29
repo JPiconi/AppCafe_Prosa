@@ -1,97 +1,62 @@
-// Importações principais do React e hooks de estado e referência
-import React, { useState, useRef } from "react";
-
-// Importação de componentes visuais do React Native
+import React, { useState, useRef, useContext } from "react";
 import {
-  View, // Contêiner de layout
-  Text, // Texto na tela
-  Image, // Imagem (foto de perfil, galeria etc.)
-  TouchableOpacity, // Botão que pode ser pressionado
-  ScrollView, // Área com rolagem
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
   Animated,
-  TextInput, // Componente para animações
+  Switch,
 } from "react-native";
-
-// Importa biblioteca para seleção de imagens da galeria
 import * as ImagePicker from "expo-image-picker";
-
-// Hooks de navegação para mudar de telas
-import { useNavigation, useRoute } from "@react-navigation/native";
-
-// Importa estilos visuais externos específicos para esta tela
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../context/AuthContext";
 import { homeStyles } from "../Styles/stylesHome";
-import { styles } from "../Styles/styles";
-// Componente principal da tela inicial
+
 export default function HomeScreen() {
-  // Acessa os parâmetros da rota (dados do login)
-  const route = useRoute();
-
-  // Hook para navegação entre telas
   const navigation = useNavigation();
+  const { user, logout } = useContext(AuthContext);
 
-  // Extrai nome e e-mail passados pela tela de login (com valores padrão caso não venham)
-  const { userName = "Usuário", email = "usuario@email.com" } =
-    route.params || {};
-
-  // Estado que armazena o URI da imagem de perfil escolhida
-  const [imageUri, setImageUri] = useState(null);
-
-  // Estado que controla se o menu lateral está aberto ou não
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Referência de animação para mover o menu lateral (começa fora da tela)
   const menuAnim = useRef(new Animated.Value(-220)).current;
+  const [imageUri, setImageUri] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
-  // Função para abrir/fechar o menu com animação
+  // Alterna menu
   const toggleMenu = () => {
     Animated.timing(menuAnim, {
-      toValue: menuOpen ? -220 : 0, // Move o menu para dentro ou fora da tela
-      duration: 300, // Duração da animação em milissegundos
-      useNativeDriver: true, // Usa o driver nativo para melhor desempenho
+      toValue: menuOpen ? -220 : 0,
+      duration: 300,
+      useNativeDriver: true,
     }).start();
-
-    // Atualiza o estado de visibilidade do menu
     setMenuOpen(!menuOpen);
   };
 
-  // Função para abrir a galeria e selecionar uma imagem
+  // Escolher imagem de perfil
   const pickImage = async () => {
-    // Solicita permissão para acessar a galeria
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    // Se o usuário negar, exibe alerta
     if (status !== "granted") {
       alert("Permissão negada para acessar as fotos!");
       return;
     }
-
-    // Abre a galeria e permite seleção de imagem
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Só permite imagens
-      quality: 1, // Qualidade máxima
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
     });
-
-    // Se o usuário selecionou uma imagem, atualiza o estado com o URI
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
+    if (!result.canceled) setImageUri(result.assets[0].uri);
   };
 
-  // Lista de fotos para exibir na rolagem da página
-  const photos = [
-    require("../assets/images/photo1.jpg"),
-    require("../assets/images/photo2.jpg"),
-    require("../assets/images/photo3.jpg"),
-    require("../assets/images/photo4.jpg"),
-    require("../assets/images/photo5.jpg"),
-  ];
+  // Logout
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace("Login");
+  };
 
-  // Renderização do componente
   return (
-    <View style={{ flex: 1 }}>
-      {/* CABEÇALHO DA TELA */}
+    <View
+      style={[homeStyles.container, darkMode && { backgroundColor: "#222" }]}
+    >
+      {/* Cabeçalho */}
       <View style={homeStyles.header}>
-        {/* Imagem de perfil (pode ser clicada para trocar) */}
         <TouchableOpacity onPress={pickImage}>
           <Image
             source={
@@ -103,130 +68,84 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
 
-        {/* Nome do usuário */}
-        <Text style={homeStyles.userName}>{userName}</Text>
+        <Text style={[homeStyles.userName, darkMode && { color: "#fff" }]}>
+          {user?.username || "Usuário"}
+        </Text>
 
-        {/* Botão do menu hambúrguer (☰) */}
         <TouchableOpacity style={homeStyles.menuButton} onPress={toggleMenu}>
-          <Text style={{ fontSize: 30, color: "black" }}>☰</Text>
+          <Text style={{ fontSize: 30, color: darkMode ? "#fff" : "#000" }}>
+            ☰
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* MENU LATERAL COM ANIMAÇÃO */}
+      {/* Menu lateral */}
       <Animated.View
         style={[
           homeStyles.sideMenu,
-          {
-            transform: [{ translateX: menuAnim }], // Aplica a animação horizontal
-          },
+          { transform: [{ translateX: menuAnim }] },
+          darkMode && { backgroundColor: "#333" },
         ]}
       >
-        {/* Título do menu */}
-        <Text style={homeStyles.menuTitle}>Menu</Text>
+        <Text style={[homeStyles.menuTitle, darkMode && { color: "#fff" }]}>
+          Menu
+        </Text>
 
-        {/* Opção de voltar para login */}
-        <TouchableOpacity
-          style={homeStyles.menuItem}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={homeStyles.menuItemText}> Voltar para Login</Text>
-        </TouchableOpacity>
-
-        {/* Informações do usuário logado */}
+        {/* Perfil */}
         <TouchableOpacity style={homeStyles.menuItem}>
-          <Text style={homeStyles.menuItemText}> Conta: {userName}</Text>
-          <Text style={homeStyles.menuItemText}> {email}</Text>
+          <Text
+            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
+          >
+            Perfil: {user?.username || "Usuário"}
+          </Text>
         </TouchableOpacity>
 
-        {/* Opção fictícia de troca de senha */}
+        {/* Email */}
         <TouchableOpacity style={homeStyles.menuItem}>
-          <Text style={homeStyles.menuItemText}>Trocar Senha</Text>
+          <Text
+            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
+          >
+            Email: {user?.email || ""}
+          </Text>
         </TouchableOpacity>
 
-        {/* Opção fictícia de configurações */}
+        {/* Tema Escuro */}
         <TouchableOpacity style={homeStyles.menuItem}>
-          <Text style={homeStyles.menuItemText}> Configurações</Text>
+          <Text
+            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
+          >
+            Tema Escuro
+          </Text>
+          <Switch value={darkMode} onValueChange={setDarkMode} />
         </TouchableOpacity>
 
-        {/* Logout: volta para a tela de login e fecha o menu */}
-        <TouchableOpacity
-          style={homeStyles.menuItem}
-          onPress={() => {
-            setMenuOpen(false); // Fecha o menu
-            navigation.navigate("Login"); // Vai para login
-          }}
-        >
-          <Text style={homeStyles.menuItemText}>🚪 Logout</Text>
+        {/* Logout */}
+        <TouchableOpacity style={homeStyles.menuItem} onPress={handleLogout}>
+          <Text
+            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
+          >
+            🚪 Logout
+          </Text>
         </TouchableOpacity>
       </Animated.View>
 
-      <View style={homeStyles.View_TouchableOpacity_Home}>
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-      </View>
-
-      <View style={homeStyles.View_TouchableOpacity_Home}>
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-      </View>
-
-      <View style={homeStyles.View_TouchableOpacity_Home}>
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-      </View>
-
-      <View style={homeStyles.View_TouchableOpacity_Home}>
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
-
-        <TouchableOpacity
-          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
-          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
-        ></TouchableOpacity>
+      {/* Conteúdo principal */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>
+          Bem-vindo, {user?.username || "Usuário"}!
+        </Text>
+        <Text
+          style={{
+            color: darkMode ? "#fff" : "#000",
+            fontSize: 14,
+            marginTop: 5,
+          }}
+        >
+          Email: {user?.email || ""}
+        </Text>
       </View>
     </View>
   );
 }
+
+//Teste

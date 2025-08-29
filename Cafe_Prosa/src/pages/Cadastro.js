@@ -1,6 +1,4 @@
-// src/pages/Cadastro.js
-
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,25 +8,28 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../Styles/styles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
+import MaskInput, { Masks } from "react-native-mask-input";
 
 export default function CadastroScreen() {
-  // Estados para os campos
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmSenha, setConfirmSenha] = useState("");
   const [cpf, setCpf] = useState("");
+  const [showSenha, setShowSenha] = useState(false);
+  const [showConfirmSenha, setShowConfirmSenha] = useState(false);
 
   const navigation = useNavigation();
+  const { register } = useContext(AuthContext);
 
-  // Função para validar email
   const isEmailValid = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
-  // Validações da senha
   const validations = {
     length: senha.length >= 8,
     upper: /[A-Z]/.test(senha),
@@ -36,67 +37,31 @@ export default function CadastroScreen() {
     number: /[0-9]/.test(senha),
     special: /[!@#$%^&*(),.?":{}|<>]/.test(senha),
   };
-
   const allValid = Object.values(validations).every(Boolean);
 
-  // Retorna primeiro critério inválido
-  const getFirstInvalidValidation = () => {
-    if (!validations.upper) return "Letra maiúscula";
-    if (!validations.lower) return "Letra minúscula";
-    if (!validations.number) return "Número";
-    if (!validations.special) return "Caractere especial";
-    if (!validations.length) return "Mínimo de 8 caracteres";
-    return null;
-  };
-
-  // Exibe texto de validação
-  const renderValidationItem = (label, valid) => (
-    <Text
-      key={label}
-      style={{
-        color: valid ? "green" : "red",
-        fontSize: 12,
-        marginBottom: 2,
-      }}
-    >
-      {label}
-    </Text>
-  );
-
-  // Função para cadastro
   const handleCadastro = async () => {
     if (!username || !email || !senha || !confirmSenha || !cpf) {
-      alert("Preencha todos os campos.");
+      Alert.alert("Erro", "Preencha todos os campos.");
       return;
     }
-
     if (!isEmailValid(email)) {
-      alert("Digite um e-mail válido.");
+      Alert.alert("Erro", "Digite um e-mail válido.");
       return;
     }
-
     if (!allValid) {
-      alert("A senha não atende todos os requisitos.");
+      Alert.alert("Erro", "A senha não atende todos os requisitos.");
       return;
     }
-
     if (senha !== confirmSenha) {
-      alert("As senhas não coincidem.");
+      Alert.alert("Erro", "As senhas não coincidem.");
       return;
     }
 
     try {
-      await AsyncStorage.setItem("userEmail", email);
-      await AsyncStorage.setItem("userName", username);
-      await AsyncStorage.setItem("userCPF", cpf);
-
-      navigation.navigate("Home", {
-        userEmail: email,
-        userName: username,
-        userCPF: cpf,
-      });
+      await register({ username, email, cpf, senha });
+      navigation.replace("Home");
     } catch (e) {
-      alert("Erro ao salvar dados.");
+      Alert.alert("Erro", "Erro ao cadastrar usuário.");
     }
   };
 
@@ -107,20 +72,18 @@ export default function CadastroScreen() {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          {/* Logo */}
           <Image
             source={require("../assets/images/Logo.png")}
             style={styles.Logo}
             resizeMode="contain"
           />
 
-          {/* Linha: Nome + Email */}
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          {/* Nome + E-mail */}
+          <View style={{ flexDirection: "row", gap: 10, width: "100%" }}>
             <View style={{ flex: 1 }}>
               <Text style={styles.label}>Nome:</Text>
               <TextInput
                 style={styles.input}
-                placeholderTextColor="#381e14"
                 value={username}
                 onChangeText={setUsername}
               />
@@ -129,7 +92,6 @@ export default function CadastroScreen() {
               <Text style={styles.label}>E-mail:</Text>
               <TextInput
                 style={styles.input}
-                placeholderTextColor="#381e14"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
@@ -137,61 +99,73 @@ export default function CadastroScreen() {
             </View>
           </View>
 
-          {/* Linha: Senha + Confirmar senha */}
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+          {/* Senha + Confirmar Senha */}
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              marginTop: 10,
+              width: "100%",
+            }}
+          >
             <View style={{ flex: 1 }}>
               <Text style={styles.label}>Senha:</Text>
-              <TextInput
-                style={styles.input}
-                placeholderTextColor="#381e14"
-                secureTextEntry
-                value={senha}
-                onChangeText={setSenha}
-              />
+              <View style={{ position: "relative" }}>
+                <TextInput
+                  style={[styles.input, { paddingRight: 40 }]}
+                  secureTextEntry={!showSenha}
+                  value={senha}
+                  onChangeText={setSenha}
+                />
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 10, top: 12 }}
+                  onPress={() => setShowSenha(!showSenha)}
+                >
+                  <Ionicons
+                    name={showSenha ? "eye" : "eye-off"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
+
             <View style={{ flex: 1 }}>
               <Text style={styles.label}>Confirmar senha:</Text>
-              <TextInput
-                style={styles.input}
-                placeholderTextColor="#381e14"
-                secureTextEntry
-                value={confirmSenha}
-                onChangeText={setConfirmSenha}
-              />
+              <View style={{ position: "relative" }}>
+                <TextInput
+                  style={[styles.input, { paddingRight: 40 }]}
+                  secureTextEntry={!showConfirmSenha}
+                  value={confirmSenha}
+                  onChangeText={setConfirmSenha}
+                />
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 10, top: 12 }}
+                  onPress={() => setShowConfirmSenha(!showConfirmSenha)}
+                >
+                  <Ionicons
+                    name={showConfirmSenha ? "eye" : "eye-off"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
-          {/* Campo CPF */}
+          {/* CPF */}
           <View style={{ marginTop: 10, width: "100%" }}>
             <Text style={styles.label}>CPF:</Text>
-            <TextInput
-              style={styles.input}
-              placeholderTextColor="#381e14"
-              keyboardType="numeric"
+            <MaskInput
               value={cpf}
               onChangeText={setCpf}
+              style={styles.input}
+              keyboardType="numeric"
+              mask={Masks.BRL_CPF}
+              placeholder="000.000.000-00"
             />
           </View>
 
-          {/* Validação da senha */}
-          {senha.length > 0 && (
-            <View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
-              {(() => {
-                const firstInvalid = getFirstInvalidValidation();
-                if (firstInvalid) {
-                  return renderValidationItem(firstInvalid, false);
-                } else {
-                  return (
-                    <Text style={{ color: "green", fontSize: 12 }}>
-                      Senha válida!
-                    </Text>
-                  );
-                }
-              })()}
-            </View>
-          )}
-
-          {/* Botão */}
           <TouchableOpacity style={styles.btn} onPress={handleCadastro}>
             <Text style={styles.btnText}>CADASTRAR</Text>
           </TouchableOpacity>
