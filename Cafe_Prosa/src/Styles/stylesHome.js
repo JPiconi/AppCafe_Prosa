@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const homeStyles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#fcedd6" },
   header: {
     height: 125,
     backgroundColor: "black",
@@ -16,27 +17,8 @@ export const homeStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#7A5445",
   },
-  userName: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 8,
-  },
-  menuButton: {
-    position: "absolute",
-    right: 15,
-    top: 50,
-  },
-  scrollContainer: {
-    padding: 10,
-    alignItems: "center",
-  },
-  scrollImage: {
-    width: "100%",
-    height: 250,
-    marginBottom: 15,
-    borderRadius: 10,
-  },
+  userName: { color: "#fff", fontSize: 18, fontWeight: "bold", marginTop: 8 },
+  menuButton: { position: "absolute", right: 15, top: 50 },
   sideMenu: {
     position: "absolute",
     top: 0,
@@ -59,22 +41,9 @@ export const homeStyles = StyleSheet.create({
   },
   menuItem: {
     marginBottom: 20,
-  },
-  menuItemText: {
-    fontSize: 16,
-  },
-  TouchableOpacity_Home: {
-    backgroundColor: "#381e14",
-    width: 125,
-    height: 100,
-    gap: 5,
-  },
-  View_TouchableOpacity_Home: {
     flexDirection: "row",
-    gap: 5,
-    color: "black",
-    bottom: 20,
-    justifyContent: "center",
-    bottom: -15,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
+  menuItemText: { fontSize: 16 },
 });

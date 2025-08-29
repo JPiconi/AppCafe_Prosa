@@ -1,5 +1,4 @@
-// src/pages/LoginScreen.js
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,69 +8,53 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../Styles/styles";
+import { AuthContext } from "../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [showSenha, setShowSenha] = useState(false);
+
   const navigation = useNavigation();
+  const { login, user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user) navigation.replace("Home"); // já logado, vai direto para Home
+  }, [user]);
 
   const isEmailValid = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
-  const validations = {
-    length: senha.length >= 8,
-    upper: /[A-Z]/.test(senha),
-    lower: /[a-z]/.test(senha),
-    number: /[0-9]/.test(senha),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(senha),
-  };
-
-  const allValid = Object.values(validations).every(Boolean);
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !senha) {
-      alert("Preencha todos os campos!");
+      Alert.alert("Erro", "Preencha todos os campos.");
       return;
     }
-
     if (!isEmailValid(email)) {
-      alert("Digite um e-mail válido.");
+      Alert.alert("Erro", "Digite um e-mail válido.");
+      return;
+    }
+    if (senha.length < 8) {
+      Alert.alert("Erro", "Senha inválida.");
       return;
     }
 
-    if (!allValid) {
-      alert("A senha não atende todos os requisitos.");
-      return;
+    try {
+      // Aqui você pode usar os dados reais do usuário registrado
+      await login({
+        username: "Usuário", // default temporário
+        email,
+        cpf: "",
+        senha,
+      });
+      navigation.replace("Home");
+    } catch (e) {
+      Alert.alert("Erro", "E-mail ou senha incorretos.");
     }
-
-    navigation.navigate("Home", {
-      userEmail: email,
-    });
-  };
-
-  const renderValidationItem = (label, valid) => (
-    <Text
-      key={label}
-      style={{
-        color: valid ? "green" : "red",
-        textDecorationLine: valid ? "none" : "line-through",
-        fontSize: 12,
-        marginBottom: 2,
-      }}
-    >
-      {label}
-    </Text>
-  );
-
-  const getFirstInvalidValidation = () => {
-    if (!validations.upper) return "Letra maiúscula";
-    if (!validations.lower) return "Letra minúscula";
-    if (!validations.number) return "Número";
-    if (!validations.special) return "Caractere especial";
-    if (!validations.length) return "Mínimo de 8 caracteres";
-    return null;
   };
 
   return (
@@ -82,7 +65,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <Image
-            source={require("../assets/images/Logo.png")} // Caminho da sua logo
+            source={require("../assets/images/Logo.png")}
             style={styles.Logo}
             resizeMode="contain"
           />
@@ -90,42 +73,33 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Digite seu e-mail"
-            placeholderTextColor="#381e14"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha"
-            placeholderTextColor="#381e14"
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-          />
+          <View
+            style={{ position: "relative", width: "100%", marginBottom: 15 }}
+          >
+            <TextInput
+              style={[styles.input, { paddingRight: 40 }]}
+              placeholder="Digite sua senha"
+              secureTextEntry={!showSenha}
+              value={senha}
+              onChangeText={setSenha}
+            />
+            <TouchableOpacity
+              style={{ position: "absolute", right: 10, top: 12 }}
+              onPress={() => setShowSenha(!showSenha)}
+            >
+              <Ionicons
+                name={showSenha ? "eye" : "eye-off"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
 
-          {/* Mostrar validações uma por vez conforme digita */}
-          {senha.length > 0 && (
-            <View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
-              {(() => {
-                const firstInvalid = getFirstInvalidValidation();
-                if (firstInvalid) {
-                  return renderValidationItem(firstInvalid, false);
-                } else {
-                  return (
-                    <Text
-                      style={{ color: "green", fontSize: 12, marginBottom: 2 }}
-                    >
-                      Senha válida!
-                    </Text>
-                  );
-                }
-              })()}
-            </View>
-          )}
-
-          {/* Link para recuperar senha */}
           <TouchableOpacity onPress={() => navigation.navigate("EsqueciSenha")}>
             <Text style={{ color: "#381e14", fontSize: 14, marginBottom: 10 }}>
               Esqueci minha senha
