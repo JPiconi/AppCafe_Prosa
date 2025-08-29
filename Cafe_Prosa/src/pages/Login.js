@@ -135,6 +135,13 @@ export default function LoginScreen() {
           <TouchableOpacity style={styles.btn} onPress={handleLogin}>
             <Text style={styles.btnText}>Entrar</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Cadastro")}
+          >
+            <Text style={styles.btnText}>Fazer Cadastro</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

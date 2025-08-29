@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ab7843",
+    backgroundColor: "#fcedd6",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#402417",
     marginBottom: 15,
-    color: "#fff",
+    color: "black",
   },
   btn: {
     marginTop: 25,

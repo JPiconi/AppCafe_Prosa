@@ -2,19 +2,19 @@ import { StyleSheet } from "react-native";
 
 export const homeStyles = StyleSheet.create({
   header: {
-    height: 150,
-    backgroundColor: "#4B0082",
+    height: 125,
+    backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 40,
     position: "relative",
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#7A5445",
   },
   userName: {
     color: "#fff",
@@ -62,5 +62,19 @@ export const homeStyles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
+  },
+  TouchableOpacity_Home: {
+    backgroundColor: "#381e14",
+    width: 125,
+    height: 100,
+    gap: 5,
+  },
+  View_TouchableOpacity_Home: {
+    flexDirection: "row",
+    gap: 5,
+    color: "black",
+    bottom: 20,
+    justifyContent: "center",
+    bottom: -15,
   },
 });

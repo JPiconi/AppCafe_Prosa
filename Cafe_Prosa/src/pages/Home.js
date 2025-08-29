@@ -8,7 +8,8 @@ import {
   Image, // Imagem (foto de perfil, galeria etc.)
   TouchableOpacity, // Botão que pode ser pressionado
   ScrollView, // Área com rolagem
-  Animated, // Componente para animações
+  Animated,
+  TextInput, // Componente para animações
 } from "react-native";
 
 // Importa biblioteca para seleção de imagens da galeria
@@ -19,6 +20,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 // Importa estilos visuais externos específicos para esta tela
 import { homeStyles } from "../Styles/stylesHome";
+import { styles } from "../Styles/styles";
 // Componente principal da tela inicial
 export default function HomeScreen() {
   // Acessa os parâmetros da rota (dados do login)
@@ -106,7 +108,7 @@ export default function HomeScreen() {
 
         {/* Botão do menu hambúrguer (☰) */}
         <TouchableOpacity style={homeStyles.menuButton} onPress={toggleMenu}>
-          <Text style={{ fontSize: 30, color: "white" }}>☰</Text>
+          <Text style={{ fontSize: 30, color: "black" }}>☰</Text>
         </TouchableOpacity>
       </View>
 
@@ -158,18 +160,73 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* SCROLL COM AS FOTOS */}
-      <ScrollView contentContainerStyle={homeStyles.scrollContainer}>
-        {/* Mapeia as fotos e exibe cada uma */}
-        {photos.map((photo, index) => (
-          <Image
-            key={index} // Chave única para cada imagem
-            source={photo} // Caminho da imagem
-            style={homeStyles.scrollImage} // Estilo da imagem
-            resizeMode="cover" // Imagem cobre o espaço mantendo proporção
-          />
-        ))}
-      </ScrollView>
+      <View style={homeStyles.View_TouchableOpacity_Home}>
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+      </View>
+
+      <View style={homeStyles.View_TouchableOpacity_Home}>
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+      </View>
+
+      <View style={homeStyles.View_TouchableOpacity_Home}>
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+      </View>
+
+      <View style={homeStyles.View_TouchableOpacity_Home}>
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+
+        <TouchableOpacity
+          style={homeStyles.TouchableOpacity_Home} // Estilo do botão
+          onPress={() => navigation.navigate("Login")} // Ação ao pressionar
+        ></TouchableOpacity>
+      </View>
     </View>
   );
 }
