@@ -16,7 +16,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 // Importa os estilos globais da aplicação
-import { styles } from "../Styles/Styles";
+import { styles } from "../Styles/styles";
 
 // Função principal do componente (tela) de recuperação de senha
 export default function EsqueciSenha() {
