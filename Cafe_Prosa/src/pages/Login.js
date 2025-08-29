@@ -24,7 +24,7 @@ export default function LoginScreen() {
   const { login, user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) navigation.replace("Home");
+    if (user) navigation.replace("Home"); // já logado, vai direto para Home
   }, [user]);
 
   const isEmailValid = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
@@ -44,8 +44,9 @@ export default function LoginScreen() {
     }
 
     try {
+      // Aqui você pode usar os dados reais do usuário registrado
       await login({
-        username: "Usuário", // Definindo nome default para evitar erro
+        username: "Usuário", // default temporário
         email,
         cpf: "",
         senha,
