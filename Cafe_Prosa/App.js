@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Páginas
-import TelaInicial from "./src/pages/Onboarding";
+import Onboarding from "./src/pages/Onboarding";
 import Login from "./src/pages/Login";
 import Cadastro from "./src/pages/Cadastro";
 import EsqueciSenha from "./src/pages/EsqueciSenha";
@@ -19,7 +19,7 @@ export default function App() {
         initialRouteName="Onboarding"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="Onboarding" component={TelaInicial} />
+        <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />

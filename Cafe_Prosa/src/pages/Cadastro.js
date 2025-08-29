@@ -1,96 +1,60 @@
 // src/pages/Cadastro.js
 
-// Importa o React e o hook useState para manipular estados locais
 import React, { useState } from "react";
-
-// Importa componentes essenciais da interface do React Native
 import {
-  View, // Container visual de layout
-  Text, // Texto simples
-  TextInput, // Campo de entrada de texto
-  TouchableOpacity, // Botão que responde ao toque
-  ScrollView, // Permite rolagem da tela
-  KeyboardAvoidingView, // Impede que o teclado sobreponha os campos
-  Platform, // Detecta o sistema operacional
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
 } from "react-native";
-
-// Importa o hook de navegação
 import { useNavigation } from "@react-navigation/native";
-
-// Importa estilos visuais definidos separadamente
-import { styles } from "../Styles/Styles";
-
-// Importa biblioteca para armazenamento local assíncrono
+import { styles } from "../Styles/styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Função principal do componente da tela de Cadastro
 export default function CadastroScreen() {
-  // Define estados para armazenar os dados digitados
-  const [username, setUsername] = useState(""); // Nome de usuário
-  const [email, setEmail] = useState(""); // E-mail
-  const [senha, setSenha] = useState(""); // Senha
+  // Estados para os campos
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmSenha, setConfirmSenha] = useState("");
+  const [cpf, setCpf] = useState("");
 
-  // Hook de navegação para transição entre telas
   const navigation = useNavigation();
 
-  // Função para validar e-mail com regex
+  // Função para validar email
   const isEmailValid = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
-  // Conjunto de validações da senha
+  // Validações da senha
   const validations = {
-    length: senha.length >= 8, // Pelo menos 8 caracteres
-    upper: /[A-Z]/.test(senha), // Pelo menos uma letra maiúscula
-    lower: /[a-z]/.test(senha), // Pelo menos uma letra minúscula
-    number: /[0-9]/.test(senha), // Pelo menos um número
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(senha), // Pelo menos um caractere especial
+    length: senha.length >= 8,
+    upper: /[A-Z]/.test(senha),
+    lower: /[a-z]/.test(senha),
+    number: /[0-9]/.test(senha),
+    special: /[!@#$%^&*(),.?":{}|<>]/.test(senha),
   };
 
-  // Verifica se todas as validações retornam true
   const allValid = Object.values(validations).every(Boolean);
 
-  // Função chamada ao pressionar o botão de cadastro
-  const handleCadastro = async () => {
-    // Verifica se todos os campos estão preenchidos
-    if (!username || !email || !senha) {
-      alert("Preencha todos os campos.");
-      return;
-    }
-
-    // Valida o formato do e-mail
-    if (!isEmailValid(email)) {
-      alert("Digite um e-mail válido.");
-      return;
-    }
-
-    // Valida a força da senha
-    if (!allValid) {
-      alert("A senha não atende todos os requisitos.");
-      return;
-    }
-
-    try {
-      // Salva o e-mail e nome de usuário localmente no AsyncStorage
-      await AsyncStorage.setItem("userEmail", email);
-      await AsyncStorage.setItem("userName", username);
-
-      // Navega para a tela Home e envia os dados
-      navigation.navigate("Home", {
-        userEmail: email,
-        userName: username,
-      });
-    } catch (e) {
-      // Mostra erro caso o salvamento falhe
-      alert("Erro ao salvar dados.");
-    }
+  // Retorna primeiro critério inválido
+  const getFirstInvalidValidation = () => {
+    if (!validations.upper) return "Letra maiúscula";
+    if (!validations.lower) return "Letra minúscula";
+    if (!validations.number) return "Número";
+    if (!validations.special) return "Caractere especial";
+    if (!validations.length) return "Mínimo de 8 caracteres";
+    return null;
   };
 
-  // Função que mostra a mensagem de validação (verde/vermelha)
+  // Exibe texto de validação
   const renderValidationItem = (label, valid) => (
     <Text
       key={label}
       style={{
-        color: valid ? "green" : "red", // Verde se válido, vermelho se inválido
-        textDecorationLine: valid ? "none" : "line-through", // Riscado se inválido
+        color: valid ? "green" : "red",
         fontSize: 12,
         marginBottom: 2,
       }}
@@ -99,72 +63,126 @@ export default function CadastroScreen() {
     </Text>
   );
 
-  // Retorna o primeiro critério de senha que não foi atendido
-  const getFirstInvalidValidation = () => {
-    if (!validations.upper) return "Letra maiúscula";
-    if (!validations.lower) return "Letra minúscula";
-    if (!validations.number) return "Número";
-    if (!validations.special) return "Caractere especial";
-    if (!validations.length) return "Mínimo de 8 caracteres";
-    return null; // Se todos estiverem válidos
+  // Função para cadastro
+  const handleCadastro = async () => {
+    if (!username || !email || !senha || !confirmSenha || !cpf) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+
+    if (!isEmailValid(email)) {
+      alert("Digite um e-mail válido.");
+      return;
+    }
+
+    if (!allValid) {
+      alert("A senha não atende todos os requisitos.");
+      return;
+    }
+
+    if (senha !== confirmSenha) {
+      alert("As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      await AsyncStorage.setItem("userEmail", email);
+      await AsyncStorage.setItem("userName", username);
+      await AsyncStorage.setItem("userCPF", cpf);
+
+      navigation.navigate("Home", {
+        userEmail: email,
+        userName: username,
+        userCPF: cpf,
+      });
+    } catch (e) {
+      alert("Erro ao salvar dados.");
+    }
   };
 
-  // Renderiza a interface da tela
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"} // Adapta para iOS ou Android
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* Área rolável para evitar que o teclado esconda os campos */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          {/* Título de boas-vindas */}
-          <Text style={styles.title}>Bem-vindo!</Text>
-
-          {/* Campo: Nome de usuário */}
-          <TextInput
-            style={styles.input}
-            placeholder="Nome de usuário"
-            placeholderTextColor="#888"
-            value={username}
-            onChangeText={setUsername}
+          {/* Logo */}
+          <Image
+            source={require("../assets/images/Logo.png")}
+            style={styles.Logo}
+            resizeMode="contain"
           />
 
-          {/* Campo: E-mail */}
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu e-mail"
-            placeholderTextColor="#888"
-            keyboardType="email-address" // Ativa teclado com @
-            value={email}
-            onChangeText={setEmail}
-          />
+          {/* Linha: Nome + Email */}
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.label}>Nome:</Text>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#381e14"
+                value={username}
+                onChangeText={setUsername}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.label}>E-mail:</Text>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#381e14"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+          </View>
 
-          {/* Campo: Senha */}
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha"
-            placeholderTextColor="#888"
-            secureTextEntry // Oculta o texto da senha
-            value={senha}
-            onChangeText={setSenha}
-          />
+          {/* Linha: Senha + Confirmar senha */}
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.label}>Senha:</Text>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#381e14"
+                secureTextEntry
+                value={senha}
+                onChangeText={setSenha}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.label}>Confirmar senha:</Text>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#381e14"
+                secureTextEntry
+                value={confirmSenha}
+                onChangeText={setConfirmSenha}
+              />
+            </View>
+          </View>
 
-          {/* Mostra validações da senha conforme usuário digita */}
+          {/* Campo CPF */}
+          <View style={{ marginTop: 10, width: "100%" }}>
+            <Text style={styles.label}>CPF:</Text>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor="#381e14"
+              keyboardType="numeric"
+              value={cpf}
+              onChangeText={setCpf}
+            />
+          </View>
+
+          {/* Validação da senha */}
           {senha.length > 0 && (
             <View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
               {(() => {
-                // Pega o primeiro critério não atendido
                 const firstInvalid = getFirstInvalidValidation();
                 if (firstInvalid) {
-                  // Mostra regra pendente em vermelho
                   return renderValidationItem(firstInvalid, false);
                 } else {
-                  // Senha válida: mensagem verde
                   return (
-                    <Text
-                      style={{ color: "green", fontSize: 12, marginBottom: 2 }}
-                    >
+                    <Text style={{ color: "green", fontSize: 12 }}>
                       Senha válida!
                     </Text>
                   );
@@ -173,9 +191,9 @@ export default function CadastroScreen() {
             </View>
           )}
 
-          {/* Botão de cadastro */}
+          {/* Botão */}
           <TouchableOpacity style={styles.btn} onPress={handleCadastro}>
-            <Text style={styles.btnText}>Entrar</Text>
+            <Text style={styles.btnText}>CADASTRAR</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
