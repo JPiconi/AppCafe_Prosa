@@ -32,7 +32,7 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     if (!email || !senha) {
-      alert("Preencha todos os campos.");
+      alert("Preencha todos os campos!");
       return;
     }
 
