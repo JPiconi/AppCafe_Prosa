@@ -24,36 +24,20 @@ export default function LoginScreen() {
   const { login, user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) navigation.replace("Home"); // já logado, vai direto para Home
+    if (user) navigation.replace("Home");
   }, [user]);
-
-  const isEmailValid = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
   const handleLogin = async () => {
     if (!email || !senha) {
       Alert.alert("Erro", "Preencha todos os campos.");
       return;
     }
-    if (!isEmailValid(email)) {
-      Alert.alert("Erro", "Digite um e-mail válido.");
-      return;
-    }
-    if (senha.length < 8) {
-      Alert.alert("Erro", "Senha inválida.");
-      return;
-    }
 
     try {
-      // Aqui você pode usar os dados reais do usuário registrado
-      await login({
-        username: "Usuário", // default temporário
-        email,
-        cpf: "",
-        senha,
-      });
+      await login({ email, senha });
       navigation.replace("Home");
     } catch (e) {
-      Alert.alert("Erro", "E-mail ou senha incorretos.");
+      Alert.alert("Erro", e.message);
     }
   };
 
