@@ -137,8 +137,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-<<<<<<< HEAD
-
-//Teste
-=======
->>>>>>> a5102870fc89ac0502d52197c64d891f0dd47876
