@@ -27,7 +27,7 @@ export default function Onboarding() {
     <View style={styles.container}>
       {/* Logo do app */}
       <Image
-        source={require("../assets/images/Logo.png")} // Caminho da sua logo
+        source={require("../../assets/images/Logo.png")} // Caminho da sua logo
         style={styles.Logo}
         resizeMode="contain"
       />

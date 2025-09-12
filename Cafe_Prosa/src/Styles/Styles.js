@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fcedd6",
+    backgroundColor: "#eea369",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#381e14",
+    color: "#8f3d01",
     marginBottom: 4,
   },
 

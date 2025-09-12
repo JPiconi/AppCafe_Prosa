@@ -1,139 +1,127 @@
-// src/pages/Home.js
-import React, { useState, useRef, useContext } from "react";
+// src/screens/Home.js
+import React from "react";
 import {
   View,
   Text,
-  Image,
+  StyleSheet,
   TouchableOpacity,
-  Animated,
-  Switch,
+  ScrollView,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import { homeStyles } from "../Styles/stylesHome";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
-  const { user, logout } = useContext(AuthContext);
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuAnim = useRef(new Animated.Value(-220)).current;
-  const [imageUri, setImageUri] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
-
-  const toggleMenu = () => {
-    Animated.timing(menuAnim, {
-      toValue: menuOpen ? -220 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    setMenuOpen(!menuOpen);
-  };
-
-  // ✅ ImagePicker atualizado (sem warning)
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permissão negada para acessar as fotos!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaType.Images], // ✅ correção
-      quality: 1,
-    });
-    if (!result.canceled) setImageUri(result.assets[0].uri);
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigation.replace("Login");
-  };
-
+export default function Home() {
   return (
-    <View
-      style={[homeStyles.container, darkMode && { backgroundColor: "#222" }]}
-    >
+    <View style={styles.container}>
       {/* Cabeçalho */}
-      <View style={homeStyles.header}>
-        <TouchableOpacity onPress={pickImage}>
-          <Image
-            source={
-              imageUri
-                ? { uri: imageUri }
-                : require("../assets/images/profile.jpg")
-            }
-            style={homeStyles.profileImage}
-          />
-        </TouchableOpacity>
-
-        <Text style={[homeStyles.userName, darkMode && { color: "#fff" }]}>
-          {user?.username || "Usuário"}
-        </Text>
-
-        <TouchableOpacity style={homeStyles.menuButton} onPress={toggleMenu}>
-          <Text style={{ fontSize: 30, color: darkMode ? "#fff" : "#fff" }}>
-            ☰
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.welcome}>☕ Bem-vindo ao Café Prosa!</Text>
+        <Text style={styles.subtitle}>Seu espaço de aconchego</Text>
       </View>
 
-      {/* Menu lateral */}
-      <Animated.View
-        style={[
-          homeStyles.sideMenu,
-          { transform: [{ translateX: menuAnim }] },
-          darkMode && { backgroundColor: "#333" },
-        ]}
-      >
-        <Text style={[homeStyles.menuTitle, darkMode && { color: "#fff" }]}>
-          Menu
-        </Text>
+      {/* Conteúdo rolável */}
+      <ScrollView style={styles.content}>
+        <Text style={styles.sectionTitle}>Menu Rápido</Text>
 
-        {/* Perfil */}
-        <TouchableOpacity style={homeStyles.menuItem}>
-          <Text
-            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
-          >
-            Perfil
+        <View style={styles.menuContainer}>
+          <TouchableOpacity style={styles.menuItem}>
+            <Ionicons name="cafe-outline" size={32} color="#fff" />
+            <Text style={styles.menuText}>Cardápio</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <Ionicons name="time-outline" size={32} color="#fff" />
+            <Text style={styles.menuText}>Reservas</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <Ionicons name="gift-outline" size={32} color="#fff" />
+            <Text style={styles.menuText}>Promoções</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <Ionicons name="chatbubbles-outline" size={32} color="#fff" />
+            <Text style={styles.menuText}>Contato</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.sectionTitle}>Novidades</Text>
+        <View style={styles.card}>
+          <Text style={styles.cardText}>
+            🌟 Experimente nosso novo café especial da semana com desconto
+            exclusivo!
           </Text>
-        </TouchableOpacity>
-
-        {/* Email */}
-        <TouchableOpacity style={homeStyles.menuItem}>
-          <Text
-            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
-          >
-            Email: {user?.email || "não informado"}
-          </Text>
-        </TouchableOpacity>
-
-        {/* Tema Escuro */}
-        <TouchableOpacity style={homeStyles.menuItem}>
-          <Text
-            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
-          >
-            Tema Escuro
-          </Text>
-          <Switch value={darkMode} onValueChange={setDarkMode} />
-        </TouchableOpacity>
-
-        {/* Logout */}
-        <TouchableOpacity style={homeStyles.menuItem} onPress={handleLogout}>
-          <Text
-            style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
-          >
-            🚪 Logout
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Conteúdo principal */}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>
-          Bem-vindo, {user?.username || "Usuário"}!
-        </Text>
-      </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#EEA369",
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#C45306",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  welcome: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#f2f2f2",
+  },
+  content: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#330A05",
+    marginBottom: 10,
+  },
+  menuContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  menuItem: {
+    width: "48%",
+    height: 100,
+    backgroundColor: "#761305",
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  menuText: {
+    color: "#fff",
+    marginTop: 5,
+    fontWeight: "bold",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+    marginBottom: 20,
+  },
+  cardText: {
+    color: "#550F05",
+    fontSize: 14,
+  },
+});
