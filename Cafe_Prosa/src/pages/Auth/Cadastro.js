@@ -73,7 +73,7 @@ export default function CadastroScreen() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <Image
-            source={require("../assets/images/Logo.png")}
+            source={require("../../assets/images/Logo.png")}
             style={styles.Logo}
             resizeMode="contain"
           />

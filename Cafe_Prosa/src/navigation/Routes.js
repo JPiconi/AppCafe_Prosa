@@ -1,4 +1,3 @@
-// src/navigation/Routes.js
 import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, ActivityIndicator } from "react-native";
@@ -10,7 +9,6 @@ import Login from "../pages/Auth/Login";
 import Cadastro from "../pages/Auth/Cadastro";
 import EsqueciSenha from "../pages/Auth/EsqueciSenha";
 import Home from "../pages/Main/Home";
-// import Dashboard from "../pages/Main/Dashboard"; // futuro
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +35,6 @@ export default function Routes() {
       ) : (
         <>
           <Stack.Screen name="Home" component={Home} />
-          {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
         </>
       )}
     </Stack.Navigator>

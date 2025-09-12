@@ -1,4 +1,3 @@
-// src/pages/Home.js
 import React, { useState, useRef, useContext } from "react";
 import {
   View,
@@ -10,8 +9,8 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import { homeStyles } from "../Styles/stylesHome";
+import { AuthContext } from "../../context/AuthContext";
+import { homeStyles } from "../../Styles/stylesHome";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -31,7 +30,7 @@ export default function HomeScreen() {
     setMenuOpen(!menuOpen);
   };
 
-  // ✅ ImagePicker atualizado (sem warning)
+  // Abrir galeria de imagens
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -39,7 +38,7 @@ export default function HomeScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaType.Images], // ✅ correção
+      mediaTypes: [ImagePicker.MediaType.Images],
       quality: 1,
     });
     if (!result.canceled) setImageUri(result.assets[0].uri);
@@ -54,14 +53,13 @@ export default function HomeScreen() {
     <View
       style={[homeStyles.container, darkMode && { backgroundColor: "#222" }]}
     >
-      {/* Cabeçalho */}
       <View style={homeStyles.header}>
         <TouchableOpacity onPress={pickImage}>
           <Image
             source={
               imageUri
                 ? { uri: imageUri }
-                : require("../assets/images/profile.jpg")
+                : require("../../assets/images/profile.jpg")
             }
             style={homeStyles.profileImage}
           />
@@ -72,13 +70,10 @@ export default function HomeScreen() {
         </Text>
 
         <TouchableOpacity style={homeStyles.menuButton} onPress={toggleMenu}>
-          <Text style={{ fontSize: 30, color: darkMode ? "#fff" : "#fff" }}>
-            ☰
-          </Text>
+          <Text style={{ fontSize: 30, color: "#fff" }}>☰</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Menu lateral */}
       <Animated.View
         style={[
           homeStyles.sideMenu,
@@ -90,7 +85,6 @@ export default function HomeScreen() {
           Menu
         </Text>
 
-        {/* Perfil */}
         <TouchableOpacity style={homeStyles.menuItem}>
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
@@ -99,7 +93,6 @@ export default function HomeScreen() {
           </Text>
         </TouchableOpacity>
 
-        {/* Email */}
         <TouchableOpacity style={homeStyles.menuItem}>
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
@@ -108,7 +101,6 @@ export default function HomeScreen() {
           </Text>
         </TouchableOpacity>
 
-        {/* Tema Escuro */}
         <TouchableOpacity style={homeStyles.menuItem}>
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
@@ -118,7 +110,6 @@ export default function HomeScreen() {
           <Switch value={darkMode} onValueChange={setDarkMode} />
         </TouchableOpacity>
 
-        {/* Logout */}
         <TouchableOpacity style={homeStyles.menuItem} onPress={handleLogout}>
           <Text
             style={[homeStyles.menuItemText, darkMode && { color: "#fff" }]}
@@ -128,7 +119,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Conteúdo principal */}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>
           Bem-vindo, {user?.username || "Usuário"}!
