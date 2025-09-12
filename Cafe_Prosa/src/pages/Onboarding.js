@@ -15,7 +15,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 // Importa os estilos personalizados definidos no arquivo styles.js
-import { styles } from "../Styles/styles";
+import { styles } from "../Styles/Styles";
 
 // Função principal do componente StartScreen (tela inicial)
 export default function Onboarding() {

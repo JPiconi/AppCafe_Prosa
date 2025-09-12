@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const homeStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fcedd6" },
+  container: { flex: 1, backgroundColor: "#eea369" },
   header: {
     height: 125,
     backgroundColor: "black",
