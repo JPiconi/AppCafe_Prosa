@@ -1,42 +1,65 @@
+// src/Routes.js
 import React, { useContext } from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, ActivityIndicator } from "react-native";
-import { AuthContext } from "../context/AuthContext";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { ActivityIndicator, View } from "react-native";
+import { AuthContext } from "./context/AuthContext";
 
-// Telas
-import Onboarding from "../pages/Common/Onboarding";
-import Login from "../pages/Auth/Login";
-import Cadastro from "../pages/Auth/Cadastro";
-import EsqueciSenha from "../pages/Auth/EsqueciSenha";
-import Home from "../pages/Main/Home";
+// === Importar suas telas ===
+import Login from "./screens/Login";
+import Cadastro from "./screens/Cadastro";
+import Home from "./screens/Home";
+import Perfil from "./screens/Perfil";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function AppTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { backgroundColor: "#C45306" }, // cor da sua paleta
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#330A05",
+      }}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Perfil" component={Perfil} />
+    </Tab.Navigator>
+  );
+}
 
 export default function Routes() {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
+    // Enquanto carrega do AsyncStorage
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#381e14" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#EEA369",
+        }}
+      >
+        <ActivityIndicator size="large" color="#761305" />
       </View>
     );
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!user ? (
-        <>
-          <Stack.Screen name="Onboarding" component={Onboarding} />
+    <NavigationContainer>
+      {user ? (
+        <AppTabs />
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Cadastro" component={Cadastro} />
-          <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Home" component={Home} />
-        </>
+        </Stack.Navigator>
       )}
-    </Stack.Navigator>
+    </NavigationContainer>
   );
 }

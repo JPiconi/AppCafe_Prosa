@@ -1,22 +1,23 @@
+// src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Cria o contexto de autenticação
 export const AuthContext = createContext();
 
-// Provedor que envolve toda a aplicação
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Carrega usuário do AsyncStorage ao iniciar
+  // Carregar usuário salvo no AsyncStorage quando o app abre
   useEffect(() => {
     const loadUser = async () => {
       try {
         const storedUser = await AsyncStorage.getItem("@user");
-        if (storedUser) setUser(JSON.parse(storedUser));
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
       } catch (error) {
-        console.log("Erro ao carregar usuário:", error);
+        console.error("Erro ao carregar usuário:", error);
       } finally {
         setLoading(false);
       }
@@ -24,36 +25,57 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // Registro de novo usuário
-  const register = async (userData) => {
-    const fullUser = { ...userData };
-    setUser(fullUser);
-    await AsyncStorage.setItem("@user", JSON.stringify(fullUser));
-  };
-
-  // Login
+  // Função de login (conecta com backend)
   const login = async ({ email, senha }) => {
-    const storedUser = await AsyncStorage.getItem("@user");
-    if (!storedUser) throw new Error("Usuário não cadastrado");
+    try {
+      const res = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha }),
+      });
 
-    const parsedUser = JSON.parse(storedUser);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro no login");
 
-    if (parsedUser.email !== email) throw new Error("Usuário não cadastrado");
-    if (parsedUser.senha !== senha)
-      throw new Error("Usuário ou senha incorretos");
-
-    setUser(parsedUser);
-    return parsedUser;
+      const userData = { email, token: data.token };
+      setUser(userData);
+      await AsyncStorage.setItem("@user", JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Logout
+  // Função de cadastro (conecta com backend)
+  const register = async ({ nome, email, senha }) => {
+    try {
+      const res = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, email, senha }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro no cadastro");
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // Logout: limpa AsyncStorage e contexto
   const logout = async () => {
-    setUser(null);
-    await AsyncStorage.removeItem("@user");
+    try {
+      await AsyncStorage.removeItem("@user");
+      setUser(null);
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
