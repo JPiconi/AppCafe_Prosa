@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from "../Styles/styles";
+import { styles } from "../Styles/Styles";
 import { AuthContext } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import MaskInput, { Masks } from "react-native-mask-input";
