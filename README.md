@@ -2,54 +2,52 @@
 
 > Bem-Vindos ao Café&Prosa.
 
-Somos um empresa apaixonada por café, então decidimos criar um Aplicativo para quem é fã. Com mais de 50 itens em nosso cardapio, contendo Bebidas Quentes, Geladas e diversas iguarias para alegrar seu dia, e até quem não gosta de café se apaixona.
+Somos um empresa apaixonada por café, tanto que decidimos criar uma plataforma Web para todos que amam essa bebida. Com mais de 50 itens em nosso cardapio, contendo Bebidas Quentes, Geladas e diversas iguarias para alegrar seu dia, e até quem não gosta de café se apaixona.
 
 ---
 
 ## Instalação do Projeto:
 
-1- Instalar o [Git-Bash](https://git-scm.com/downloads) de acordo com o sistema operacional.
+A partir de agora nosso projeto não será mais mobile usando Expo.
+Agora usamos Front-End (React) e Back-End (Node.js + Express).
 
-2- Abrir o Explorador de Arquivos de acordo com o sistema operacional.
+## 🔧 1.Pré-requisitos:
 
-3- Escolha qual pasta deseja utilizar, nós iremos utilizar a pasta Downloads. Escolha qual lhe agrada mais e que não esqueça onde deixou o arquivo.
+É muito importante possuir em seu Computador.
 
-3- Ao escolher onde baixar, aperte o botão direito do mouse e clique no (`Open Git Bash here`). Irá abrir o programa [Git-Bash] caso seu sistema seja Windows, se for Linux Abra o programa terminal.
+✔️ Git
+Use a versão apropriada para seu sistema operacional.
 
-4- Digite os comandos:
+✔️ Node.js (versão LTS – recomendada)
+Necessário para rodar tanto o front quanto o back.
 
-- (`npx create-expo-app --template`) - Isso irá iniciar o projeto.
+## 📁 2.Escolher a pasta do projeto:
 
-- (`Blank`). Escolha o primeiro Blank.
+1. Abra o explorador de arquivos.
 
-- Coloque o nome que desejar. nós usaremos CafeProsaAPP.
+2. Escolha a pasta onde deseja criar o projeto (ex: Downloads).
 
-- (`cd`) + o nome do Projeto. É nescessario para entrar dentro da pasta criada.
+3. Clique com o botão direito e selecione “Open Git Bash here” (Windows).
 
-5- Para que o aplicativo funcione será preciso baixar extenções, dentro da pasta digite esses códigos:
+   No Linux/Mac, abra o Terminal.
 
-- (`npm install @react-navigation/native`)
+## 3.Criar pasta Front-End:
 
-- (`npm install @react-navigation/native-stack`)
+No terminal, execute:
 
-- (`npx expo install react-native-screens react-native-safe-area-context`)
+(`npx create react-app cafeprosa-frontend`)
 
-- Os 3 primeiros servem para navegar pelo aplicativo.
+(`cd cafeprosa-frontend`)
 
-- (`npm install @react-navigation/drawer`)
+Instale rotas:
 
-- (`npm i react-native-onboarding-swiper`)
+(`npm install react-router-dom`)
 
-- (`npm i lottie-react-native`)
+## 4.Criar pasta Back-End:
 
-- (`npm i @react-native-async-storage/async-storage`)
+Para criar o Back-End, volte para a pasta raiz
+(`cd ..`)
 
-- Esses 4 servem para criar uma tela de carregamento e salvar as informações no dispositivo, fazendo o que não precise se cadastrar ou fazer login novamente.
-
-6- Agora será preciso Clonar o repositório:
-
-- (`git init`) + [Git](https://github.com/JPiconi/AppCafe_Prosa.git).
-
-7- Com tudo baixado e repositório clonado, inicie o projeto com:
-
-- (`npx expo start --tunnel`) - Se for usado no Dispositivel Movel.
+Crie a pasta Back-End
+(`mkdir cafeprosa-backend`)
+(`cd cafeprosa-back`)
