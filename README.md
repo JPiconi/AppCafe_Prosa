@@ -49,3 +49,17 @@ Crie a pasta Back-End
 (`mkdir cafeprosa-backend`)
 (`cd cafeprosa-back`)
 
+## 5.Instale as Dependências do Back-End:
+
+(`npm install express mysql2 body-parser cors`)
+
+## 6.Para rodar o Front e Back-End:
+
+Na pasta Front-End:
+(`npm run dev`)
+
+Na Pasta Back-End:
+(`nodemon server.js`)
+
+Abra o navegador e digite:
+(`http://localhost:3000`)
